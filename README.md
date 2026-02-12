@@ -348,4 +348,4 @@ TOMCAT_START_CMD="/opt/tomcat/bin/startup.sh"
 ---
 
 ⭐ Desenvolvido para o processo seletivo de estágio em Infraestrutura do ESIG Group
->>>>>>> d82bc4e (Deixa o README mais informal e com cara de estagiário)
+
