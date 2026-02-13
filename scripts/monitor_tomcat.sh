@@ -1,24 +1,19 @@
 #!/usr/bin/env bash
 set -e
 
-source "$(dirname "$0")/../.env"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${SCRIPT_DIR}/../.env"
 
-SERVICE_NAME=${TOMCAT_SERVICE_NAME:-tomcat}
-PID_FILE=${TOMCAT_PID_FILE:-/opt/tomcat/temp/tomcat.pid}
-START_CMD=${TOMCAT_START_CMD:-"/opt/tomcat/bin/startup.sh"}
+SERVICE_NAME=${TOMCAT_SERVICE_NAME:-tomcat_esig}
+START_CMD=${TOMCAT_START_CMD:-"docker start tomcat_esig"}
 STATE_FILE="/tmp/tomcat_down_since"
 
 is_running() {
-  if command -v systemctl &>/dev/null; then
-    systemctl is-active --quiet "$SERVICE_NAME"
+  if command -v docker &>/dev/null; then
+    docker ps --format '{{.Names}}' | grep -qx "${SERVICE_NAME}"
     return $?
-  elif [ -f "$PID_FILE" ]; then
-    PID=$(cat "$PID_FILE")
-    ps -p "$PID" &>/dev/null
-    return $?
-  else
-    return 1
   fi
+  return 1
 }
 
 if is_running; then
@@ -30,6 +25,7 @@ fi
 echo "Tomcat está parado."
 
 NOW=$(date +%s)
+
 if [ ! -f "$STATE_FILE" ]; then
   echo "$NOW" > "$STATE_FILE"
   echo "Marcando momento em que parou."

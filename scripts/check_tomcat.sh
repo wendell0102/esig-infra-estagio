@@ -1,31 +1,23 @@
 #!/usr/bin/env bash
 set -e
 
-source "$(dirname "$0")/../.env"
+# Carrega variáveis do .env (assumindo que o script está em scripts/)
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${SCRIPT_DIR}/../.env"
 
-SERVICE_NAME=${TOMCAT_SERVICE_NAME:-tomcat}
-PID_FILE=${TOMCAT_PID_FILE:-/opt/tomcat/temp/tomcat.pid}
+SERVICE_NAME=${TOMCAT_SERVICE_NAME:-tomcat_esig}
 
-UPTIME="N/A"
 STATUS="stopped"
+UPTIME="N/A"
 
-if command -v systemctl &>/dev/null; then
-  if systemctl is-active --quiet "$SERVICE_NAME"; then
+if command -v docker &>/dev/null; then
+  # Procura o container pelo nome e pega o RunningFor
+  running_for=$(docker ps --format '{{.Names}} {{.RunningFor}}' \
+    | awk -v name="$SERVICE_NAME" '$1 == name { $1=""; sub(/^ /,""); print }')
+
+  if [ -n "$running_for" ]; then
     STATUS="running"
-    PID=$(systemctl show -p MainPID "$SERVICE_NAME" | cut -d= -f2)
-    if [ "$PID" != "0" ]; then
-      START_TIME=$(ps -p "$PID" -o lstart=)
-      UP_SECONDS=$(( $(date +%s) - $(date -d "$START_TIME" +%s) ))
-      UPTIME="${UP_SECONDS}s"
-    fi
-  fi
-elif [ -f "$PID_FILE" ]; then
-  PID=$(cat "$PID_FILE")
-  if ps -p "$PID" &>/dev/null; then
-    STATUS="running"
-    START_TIME=$(ps -p "$PID" -o lstart=)
-    UP_SECONDS=$(( $(date +%s) - $(date -d "$START_TIME" +%s) ))
-    UPTIME="${UP_SECONDS}s"
+    UPTIME="$running_for"
   fi
 fi
 

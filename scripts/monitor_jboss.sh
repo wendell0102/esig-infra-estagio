@@ -3,22 +3,25 @@ set -e
 
 source "$(dirname "$0")/../.env"
 
-SERVICE_NAME=${JBOSS_SERVICE_NAME:-jboss}
-PID_FILE=${JBOSS_PID_FILE:-/opt/jboss/standalone/tmp/startup-marker.pid}
-START_CMD=${JBOSS_START_CMD:-"/opt/jboss/bin/standalone.sh &"}
+SERVICE_NAME=${JBOSS_SERVICE_NAME:-jboss_esig}
+START_CMD=${JBOSS_START_CMD:-"docker start jboss_esig"}
 STATE_FILE="/tmp/jboss_down_since"
 
 is_running() {
-  if command -v systemctl &>/dev/null; then
+  # 1) systemd (modo nativo) – não deve bater, mas mantemos compatibilidade
+  if command -v systemctl &>/dev/null && systemctl list-units | grep -q "$SERVICE_NAME"; then
     systemctl is-active --quiet "$SERVICE_NAME"
     return $?
-  elif [ -f "$PID_FILE" ]; then
-    PID=$(cat "$PID_FILE")
-    ps -p "$PID" &>/dev/null
-    return $?
-  else
-    return 1
   fi
+
+  # 2) Docker (container com esse nome)
+  if command -v docker &>/dev/null; then
+    if docker ps --format '{{.Names}}' | grep -q "^${SERVICE_NAME}$"; then
+      return 0
+    fi
+  fi
+
+  return 1
 }
 
 if is_running; then

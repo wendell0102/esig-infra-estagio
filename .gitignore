@@ -1,0 +1,22 @@
+# Arquivos de configuração local
+.env
+
+# Backups do banco de dados
+*.sql
+backup_*.sql
+
+# Bibliotecas e dependências
+*.jar
+*.war
+
+# Logs
+*.log
+
+# Arquivos temporários
+*.tmp
+*.temp
+*~
+
+# Diretórios de sistema
+.DS_Store
+Thumbs.db
