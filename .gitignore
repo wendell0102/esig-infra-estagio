@@ -20,3 +20,14 @@ backup_*.sql
 # Diretórios de sistema
 .DS_Store
 Thumbs.db
+
+
+# Arquivos de PID dos serviços
+*.pid
+
+# Node modules (se houver scripts auxiliares)
+node_modules/
+
+# Python cache (se houver scripts auxiliares)
+__pycache__/
+*.pyc
