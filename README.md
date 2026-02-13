@@ -1,5 +1,11 @@
 
 # esig-infra-estagio
+
+![Shell Script](https://img.shields.io/badge/Shell_Script-121011?style=for-the-badge&logo=gnu-bash&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
+
+
 Atividade Técnica - Estágio em Infraestrutura (ESIG Group) - Scripts para dump/restore PostgreSQL e monitoramento JBoss/Tomcat
 =======
 # Atividade Técnica - Estágio ESIG 🚀
