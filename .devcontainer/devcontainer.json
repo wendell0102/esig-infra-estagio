@@ -1,0 +1,14 @@
+{
+  "name": "esig-infra-estagio",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/common-utils:2": {}
+  },
+  "forwardPorts": [5432],
+  "postCreateCommand": "chmod +x scripts/*.sh || true",
+  "remoteUser": "vscode"
+}
